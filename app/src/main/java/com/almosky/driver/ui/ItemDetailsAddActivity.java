@@ -296,7 +296,7 @@ public class ItemDetailsAddActivity extends BaseActivity {
         int isPresent = 0;
         if (ironingList != null) {
             for (int i = 0; i < ironingList.size(); i++) {
-                if (ironingList.get(i).getItemId().equals(itemId)) {
+                if (ironingList.get(i).getItemId()==itemId) {
 
                     // drycleanList.get(i).setItemcount(count);
                     Almoski.getInst().getIronList().get(i).setItemcount(count);
@@ -361,7 +361,7 @@ public class ItemDetailsAddActivity extends BaseActivity {
         int isPresent = 0;
         if (dryCleanList != null) {
             for (int i = 0; i < dryCleanList.size(); i++) {
-                if (dryCleanList.get(i).getItemId().equals(itemId)) {
+                if (dryCleanList.get(i).getItemId()==(itemId)) {
                     // drycleanList.get(i).setItemcount(count);
                     Almoski.getInst().getDrycleanList().get(i).setItemcount(count);
                     //int amount= Integer.parseInt(Almosky.getInst().getDrycleanList().get(i).getTotalAmount());
@@ -424,7 +424,7 @@ public class ItemDetailsAddActivity extends BaseActivity {
         int isPresent = 0;
         if (washIronList != null) {
             for (int i = 0; i < washIronList.size(); i++) {
-                if (washIronList.get(i).getItemId().equals(itemId)) {
+                if (washIronList.get(i).getItemId()==(itemId)) {
                     // drycleanList.get(i).setItemcount(count);
                     Almoski.getInst().getWashList().get(i).setItemcount(count);
                     //int amount= Integer.parseInt(Almosky.getInst().getDrycleanList().get(i).getTotalAmount());

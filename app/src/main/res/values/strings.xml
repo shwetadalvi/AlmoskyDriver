@@ -138,6 +138,7 @@
     <string name="btn_place_order">Place Order</string>
     <string name="text_order_total">Order total</string>
     <string name="text_p">AED</string>
-    <string name="text_discount_nisab">NASAB Club Discount(30%)</string>
+    <string name="text_discount_nisab">NASAB Club Discount</string>
     <string name="printer_out_of_paper">printer out of paper</string>
+    <string name="text_offer">Nasab Club Offer Applied</string>
 </resources>

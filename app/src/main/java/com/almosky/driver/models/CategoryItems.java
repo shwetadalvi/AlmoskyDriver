@@ -88,7 +88,7 @@ public class CategoryItems{
             private Integer categoryId;
             @SerializedName("itemId")
             @Expose
-            private Integer itemId;
+            private int itemId;
             @SerializedName("categoryName")
             @Expose
             private String categoryName;
@@ -130,11 +130,11 @@ public class CategoryItems{
                 this.categoryId = categoryId;
             }
 
-            public Integer getItemId() {
+            public int getItemId() {
                 return itemId;
             }
 
-            public void setItemId(Integer itemId) {
+            public void setItemId(int itemId) {
                 this.itemId = itemId;
             }
 

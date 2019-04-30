@@ -6,6 +6,8 @@ import com.almosky.driver.models.PriceDetails;
 import com.almosky.driver.models.Service;
 import com.almosky.driver.models.data1;
 import com.almosky.driver.models.priceListdto;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class Almoski {
     public int addressId;
 
 
-    public double vatRate,nasabRate;
+    public double vatRate, nasabRate;
     public List<CategoryItems.Detail.Item> drycleanList;
     public List<CategoryItems.Detail.Item> ironList;
     public List<CategoryItems.Detail.Item> washList;
@@ -44,7 +46,9 @@ public class Almoski {
     public ArrayList<data1.Detail.Item> washList1temp;
     public String deliveryType;
     public OrderListdto.Result selectedOrder;
+    public double nasab_disc_perc;
 
+    public double customer_disc_perc;
     public ArrayList<priceListdto.Detail> itempriceList;
 
     public int cartcount;
@@ -58,12 +62,29 @@ public class Almoski {
     public void setServiceList(List<Service> itempriceList) {
         this.serviceList = serviceList;
     }
+
     public ArrayList<priceListdto.Detail> getItempriceList() {
         return itempriceList;
     }
 
     public void setItempriceList(ArrayList<priceListdto.Detail> itempriceList) {
         this.itempriceList = itempriceList;
+    }
+
+    public void setNasab_disc_perc(double nasab_disc_perc) {
+        this.nasab_disc_perc = nasab_disc_perc;
+    }
+
+    public double getNasab_disc_perc() {
+        return nasab_disc_perc;
+    }
+
+    public void setCustomer_disc_perc(double customer_disc_perc) {
+        this.customer_disc_perc = customer_disc_perc;
+    }
+
+    public double getCustomer_disc_perc() {
+        return customer_disc_perc;
     }
 
     public int getCartcount() {
@@ -109,6 +130,7 @@ public class Almoski {
     public boolean offer;
     public String curentOrderId;
     public ArrayList<OrderListdto.Result> currentOrders;
+
     public ArrayList<data1.Detail.Item> getDrycleanList1() {
         return drycleanList1;
     }
@@ -156,7 +178,6 @@ public class Almoski {
     public void setWashList1temp(ArrayList<data1.Detail.Item> washList1temp) {
         this.washList1temp = washList1temp;
     }
-
 
 
     public String getEmail() {
@@ -274,6 +295,7 @@ public class Almoski {
     public void setDelTime(String delTime) {
         this.delTime = delTime;
     }
+
     public boolean isNisabClub() {
         return NisabClub;
     }
@@ -289,6 +311,7 @@ public class Almoski {
     public void setAddressId(int addressId) {
         this.addressId = addressId;
     }
+
     public double getVatRate() {
         return vatRate;
     }
@@ -304,6 +327,7 @@ public class Almoski {
     public void setNasabRate(double nasabRate) {
         this.nasabRate = nasabRate;
     }
+
     public int getSelecterOrderId() {
         return selecterOrderId;
     }
@@ -311,6 +335,7 @@ public class Almoski {
     public void setSelecterOrderId(int selecterOrderId) {
         this.selecterOrderId = selecterOrderId;
     }
+
     public OrderListdto.Result getSelectedOrder() {
         return selectedOrder;
     }

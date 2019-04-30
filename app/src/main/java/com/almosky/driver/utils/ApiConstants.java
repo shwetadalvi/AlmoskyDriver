@@ -9,7 +9,7 @@ public interface ApiConstants {
     String enquiryUrl = "queries/new";
     String placeOrderUrl = "order/new";
     String normalorderUrl = "order/new";
-    String editorderUrl = "order/edit";
+    String editorderUrl = "order/edit1";
     String easyorderUrl = "orderNote/new";
     String orderListUrl = "adminorder/list";
     String orderUpdateUrl = "order/update";

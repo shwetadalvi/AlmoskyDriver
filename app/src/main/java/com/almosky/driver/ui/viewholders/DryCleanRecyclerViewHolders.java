@@ -70,7 +70,7 @@ public class DryCleanRecyclerViewHolders  extends RecyclerView.ViewHolder {
 
 
         for(int i=0;i<drycleanList.size();i++) {
-            if (drycleanList.get(i).getItemId().equals(itm.getItemId())) {
+            if (drycleanList.get(i).getItemId()==(itm.getItemId())) {
                 Almoski.getInst().getDrycleanList().get(i).setItemcount(count);
                 Almoski.getInst().getDrycleanList().get(i).setTotal(String.valueOf(Integer.parseInt(Almoski.getInst().getDrycleanList().get(i).getAmount())*count));
                 dryamount.setText(Almoski.getInst().getDrycleanList().get(i).getTotal());

@@ -34,7 +34,18 @@ public class Order_ {
     @SerializedName("deliveryDriver")
     @Expose
     private String deliveryDriver;
-
+    @SerializedName("customerDisc")
+    @Expose
+    private double customerDiscount;
+    @SerializedName("nasabDiscAmt")
+    @Expose
+    private double nasabDiscount;
+    @SerializedName("nasabDiscPerc")
+    @Expose
+    private double nasab_disc_perc;
+    @SerializedName("customerDiscPerc")
+    @Expose
+    private double customer_disc_perc;
     public String getOrderNo() {
         return orderNo;
     }
@@ -113,5 +124,37 @@ public class Order_ {
 
     public void setDeliveryDriver(String deliveryDriver) {
         this.deliveryDriver = deliveryDriver;
+    }
+
+    public double getCustomerDiscount() {
+        return customerDiscount;
+    }
+
+    public void setCustomerDiscount(double customerDiscount) {
+        this.customerDiscount = customerDiscount;
+    }
+
+    public double getNasabDiscount() {
+        return nasabDiscount;
+    }
+
+    public void setNasabDiscount(double nasabDiscount) {
+        this.nasabDiscount = nasabDiscount;
+    }
+
+    public double getNasab_disc_perc() {
+        return nasab_disc_perc;
+    }
+
+    public void setNasab_disc_perc(double nasab_disc_perc) {
+        this.nasab_disc_perc = nasab_disc_perc;
+    }
+
+    public double getCustomer_disc_perc() {
+        return customer_disc_perc;
+    }
+
+    public void setCustomer_disc_perc(double customer_disc_perc) {
+        this.customer_disc_perc = customer_disc_perc;
     }
 }

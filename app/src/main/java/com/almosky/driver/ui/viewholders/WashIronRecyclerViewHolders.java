@@ -61,7 +61,7 @@ public TextView dryitem,drycount,dryamount;
 
 
         for(int i=0;i<drycleanList.size();i++) {
-            if (drycleanList.get(i).getItemId().equals(itm.getItemId())) {
+            if (drycleanList.get(i).getItemId()==(itm.getItemId())) {
                 Almoski.getInst().getWashList().get(i).setItemcount(count);
                 Almoski.getInst().getWashList().get(i).setTotal(String.valueOf(Integer.parseInt(Almoski.getInst().getWashList().get(i).getAmount())*count));
                 dryamount.setText(Almoski.getInst().getWashList().get(i).getTotal());

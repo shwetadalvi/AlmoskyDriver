@@ -122,6 +122,7 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
     Bitmap icon;
     Printer mPrinter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -545,20 +546,56 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
                     Log.d("Inside :", "Inside setUpOrderColumn1 ironlisttmp :" + Almoski.getInst().getIronList().size());
                 }
 
-
+                Almoski.getInst().setNasab_disc_perc(order.getOrder().getNasab_disc_perc());
+                Almoski.getInst().setCustomer_disc_perc(order.getOrder().getCustomer_disc_perc());
                 OrderItemAdapter adapter = new OrderItemAdapter(order.getOrder().getService());
                 mBinding.recyclerViewOrderItems.setAdapter(adapter);
                 mBinding.recyclerViewOrderItems.setHasFixedSize(true);
-                ViewCompat.setNestedScrollingEnabled(mBinding.recyclerViewOrderItems,false);
-               // mBinding.recyclerViewOrderItems.setNestedScrollingEnabled(false);
-                double vat = calculateExclusiveVat(order.getOrder().getPrice() == null ? 0 : order.getOrder().getPrice());
-                mBinding.vat5.setText(String.format("%.2f", vat));
-                double price = calulateExclusivePrice(order.getOrder().getPrice(), Double.parseDouble(mBinding.vat5.getText().toString()));
-                mBinding.orderTotal.setText(String.format("%.2f", price));
-                mBinding.netTotal.setText(String.format("%.2f", order.getOrder().getPrice()));
-                mBinding.textAmount.setText("Total: " + String.format("%.2f", order.getOrder().getPrice()));
+                ViewCompat.setNestedScrollingEnabled(mBinding.recyclerViewOrderItems, false);
+                // mBinding.recyclerViewOrderItems.setNestedScrollingEnabled(false);
+                String str_total = totalCalculation(order);
+                Log.d("Inside","total "+str_total);
+                mTotal = Double.parseDouble(str_total);
+                Log.d("Inside","total mTotal"+mTotal);
+                double netAmount = 0.0;
+                double vat = 0.0;
+                if (Almoski.getInst().isNisabClub()) {
+                    double discount = (mTotal * order.getOrder().getNasab_disc_perc() * 0.01);
+                    mTotal = mTotal - discount;
+
+
+
+                    mBinding.t2.setVisibility(View.VISIBLE);
+                    mBinding.orderDiscount.setVisibility(View.VISIBLE);
+                    mBinding.t2.setText(getResources().getString(R.string.text_offer) + "(" + order.getOrder().getNasab_disc_perc() + ")");
+
+                    mBinding.orderDiscount.setText(String.format("%.2f", discount));
+
+                } else {
+
+                    if (order.getOrder().getCustomer_disc_perc() > 0) {
+                        double discount = (mTotal * order.getOrder().getCustomer_disc_perc() * 0.01);
+                        mTotal = mTotal - discount;
+
+                        mBinding.t2.setVisibility(View.VISIBLE);
+                        mBinding.orderDiscount.setVisibility(View.VISIBLE);
+                        mBinding.t2.setText("Discount(" + order.getOrder().getCustomer_disc_perc() + ")");
+                        mBinding.orderDiscount.setText(String.format("%.2f", discount));
+                    }
+
+                }
+                // double vat = calculateExclusiveVat(order.getOrder().getPrice() == null ? 0 : order.getOrder().getPrice());
+                //  mBinding.vat5.setText(String.format("%.2f", vat));
+
+                vat = mTotal * 0.05;
+                netAmount = mTotal + vat;
+                //  double price = calulateExclusivePrice(order.getOrder().getPrice(), Double.parseDouble(mBinding.vat5.getText().toString()));
+                mBinding.orderTotal.setText(str_total);
+                mBinding.vat5.setText((String.format("%.2f", vat)));
+                mBinding.netTotal.setText(String.format("%.2f", netAmount));
+                mBinding.textAmount.setText("Total: " + String.format("%.2f", netAmount));
                 mOrder.getOrder().setVat(vat);
-                mOrder.getOrder().setExlusivePrice(price);
+                mOrder.getOrder().setExlusivePrice(netAmount - vat);
             } else {
                 //          mBinding.makeOrder.setVisibility(View.VISIBLE);
                 mBinding.pricingContainer.setVisibility(View.GONE);
@@ -587,6 +624,32 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
+        if (str.charAt(0) == '.') str = "0" + str;
+        int max = str.length();
+
+        String rFinal = "";
+        boolean after = false;
+        int i = 0, up = 0, decimal = 0;
+        char t;
+        while (i < max) {
+            t = str.charAt(i);
+            if (t != '.' && after == false) {
+                up++;
+                if (up > MAX_BEFORE_POINT) return rFinal;
+            } else if (t == '.') {
+                after = true;
+            } else {
+                decimal++;
+                if (decimal > MAX_DECIMAL)
+                    return rFinal;
+            }
+            rFinal = rFinal + t;
+            i++;
+        }
+        return rFinal;
     }
 
     @Override
@@ -693,7 +756,7 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
                 int printStatus = mPrinter.getPrinterStatus();
                 if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
 
-                            Toast.makeText(OrderActiivity.this,getResources().getString(R.string.printer_out_of_paper),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderActiivity.this, getResources().getString(R.string.printer_out_of_paper), Toast.LENGTH_SHORT).show();
 
 
                 } else {
@@ -721,60 +784,60 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
                     format.setTextSize(25);
                     format.setStyle(PrnTextStyle.NORMAL);
                     mPrinter.setPrintAppendString(COMPANY_ORDER_NO + order.getOrder().getOrderNo(), format);
-                    mPrinter.setPrintAppendString(COMPANY_DATE+ getDate() + " " + getTime(), format);
+                    mPrinter.setPrintAppendString(COMPANY_DATE + getDate() + " " + getTime(), format);
 
 
                     if (order.getOrder().getDeliveryType() == 2) {
-                        mPrinter.setPrintAppendString("Express Laundry",format);
+                        mPrinter.setPrintAppendString("Express Laundry", format);
                     }
                     mPrinter.setPrintAppendString("................................................................", format);
-                    mPrinter.setPrintAppendString("Customer Name  :" + address.getFull_Name(),format);
-                    mPrinter.setPrintAppendString("Mobile Number  :" + address.getMobile(),format);
-                    mPrinter.setPrintAppendString("Address        :" + address.getArea(),format);
+                    mPrinter.setPrintAppendString("Customer Name  :" + address.getFull_Name(), format);
+                    mPrinter.setPrintAppendString("Mobile Number  :" + address.getMobile(), format);
+                    mPrinter.setPrintAppendString("Address        :" + address.getArea(), format);
                     mPrinter.setPrintAppendString("................................................................", format);
                     mPrinter.setPrintAppendString(COMPANY_ITEM_DESCRIPTION + createSpaceHeader(false, COMPANY_ITEM_DESCRIPTION, COMPANY_ITEM_DESCRIPTION.length()) +
                             COMPANY_ITEM_QUANTITY + createSpaceAmtPrinter(COMPANY_ITEM_QUANTITY.length(), COMPANY_ITEM_AMOUNT.length()) +
-                            COMPANY_ITEM_AMOUNT,format);
+                            COMPANY_ITEM_AMOUNT, format);
                     mPrinter.setPrintAppendString("................................................................", format);
                     for (Service service : order.getOrder().getService()) {
                         for (Item item : service.getItems()) {
-                            mPrinter.setPrintAppendString(service.getServiceName(),format);
+                            mPrinter.setPrintAppendString(service.getServiceName(), format);
                             mPrinter.setPrintAppendString(item.getOrderItems().getItemName() + createSpaceHeader(false, COMPANY_ITEM_DESCRIPTION, item.getOrderItems().getItemName().length()) +
-                                    item.getOrderItems().getQuantity() + createSpaceAmtPrinter( getPrice(item.getOrderItems().getQuantity(), item.getOrderItems().getPrice()).length(), String.valueOf(item.getOrderItems().getQuantity()).length()) +
-                                    getPrice(item.getOrderItems().getQuantity(), item.getOrderItems().getPrice()),format);
+                                    item.getOrderItems().getQuantity() + createSpaceAmtPrinter(getPrice(item.getOrderItems().getQuantity(), item.getOrderItems().getPrice()).length(), String.valueOf(item.getOrderItems().getQuantity()).length()) +
+                                    getPrice(item.getOrderItems().getQuantity(), item.getOrderItems().getPrice()), format);
 
                         }
                     }
                     mPrinter.setPrintAppendString("................................................................", format);
                     format.setAli(Layout.Alignment.ALIGN_RIGHT);
-                    String total = String.format("%.2f",order.getOrder().getExlusivePrice());
-                    mPrinter.setPrintAppendString(COMPANY_ITEM_TOTAL + createSpaceZ90Printer(COMPANY_ITEM_TOTAL.length(), total.length()) + total,format);
-                    String vat = String.format("%.2f",order.getOrder().getVat());
-                    mPrinter.setPrintAppendString(COMPANY_VAT + createSpaceZ90Printer(COMPANY_VAT.length(), vat.length()) + vat,format);
+                    String total = String.format("%.2f", order.getOrder().getExlusivePrice());
+                    mPrinter.setPrintAppendString(COMPANY_ITEM_TOTAL + createSpaceZ90Printer(COMPANY_ITEM_TOTAL.length(), total.length()) + total, format);
+                    String vat = String.format("%.2f", order.getOrder().getVat());
+                    mPrinter.setPrintAppendString(COMPANY_VAT + createSpaceZ90Printer(COMPANY_VAT.length(), vat.length()) + vat, format);
 
-                    String gross =String.format("%.2f",order.getOrder().getPrice());
+                    String gross = String.format("%.2f", order.getOrder().getPrice());
                     mPrinter.setPrintAppendString("................................................................", format);
-                    mPrinter.setPrintAppendString(COMPANY_GROSS + createSpaceZ90Printer( COMPANY_GROSS.length(), gross.length()) + gross,format);
+                    mPrinter.setPrintAppendString(COMPANY_GROSS + createSpaceZ90Printer(COMPANY_GROSS.length(), gross.length()) + gross, format);
 
 
                     mPrinter.setPrintAppendString("................................................................", format);
                     format.setAli(Layout.Alignment.ALIGN_LEFT);
-                    mPrinter.setPrintAppendString(TERMS_CONDITIONS,format);
-                    mPrinter.setPrintAppendString(TERMS1,format);
-                    mPrinter.setPrintAppendString(TERMS2,format);
-                    mPrinter.setPrintAppendString(TERMS3,format);
-                    mPrinter.setPrintAppendString(TERMS4,format);
-                    mPrinter.setPrintAppendString(TERMS5,format);
-                    mPrinter.setPrintAppendString(TERMS6,format);
-                    mPrinter.setPrintAppendString(TERMS7,format);
+                    mPrinter.setPrintAppendString(TERMS_CONDITIONS, format);
+                    mPrinter.setPrintAppendString(TERMS1, format);
+                    mPrinter.setPrintAppendString(TERMS2, format);
+                    mPrinter.setPrintAppendString(TERMS3, format);
+                    mPrinter.setPrintAppendString(TERMS4, format);
+                    mPrinter.setPrintAppendString(TERMS5, format);
+                    mPrinter.setPrintAppendString(TERMS6, format);
+                    mPrinter.setPrintAppendString(TERMS7, format);
                     mPrinter.setPrintAppendString("................................................................", format);
-                    mPrinter.setPrintAppendString("Remarks : " + order.getOrder().getRemarks(),format);
-                    mPrinter.setPrintAppendString("Pickup Driver Name : " + order.getOrder().getPickupDriver(),format);
-                    mPrinter.setPrintAppendString("Delivery Driver Name : " + order.getOrder().getDeliveryDriver(),format);
+                    mPrinter.setPrintAppendString("Remarks : " + order.getOrder().getRemarks(), format);
+                    mPrinter.setPrintAppendString("Pickup Driver Name : " + order.getOrder().getPickupDriver(), format);
+                    mPrinter.setPrintAppendString("Delivery Driver Name : " + order.getOrder().getDeliveryDriver(), format);
                     mPrinter.setPrintAppendString("................................................................", format);
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    mPrinter.setPrintAppendString(centerAlignment(COMPANY_BILL_GREETING1),format);
-                    mPrinter.setPrintAppendString(centerAlignment(COMPANY_BILL_GREETING2),format);
+                    mPrinter.setPrintAppendString(centerAlignment(COMPANY_BILL_GREETING1), format);
+                    mPrinter.setPrintAppendString(centerAlignment(COMPANY_BILL_GREETING2), format);
                     format.setAli(Layout.Alignment.ALIGN_LEFT);
                     mPrinter.setPrintAppendString("................................................................", format);
 
@@ -812,8 +875,7 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
                     mPrinter.setPrintAppendString(" ", format);
                     mPrinter.setPrintAppendString(" ", format);*/
                     mPrinter.setPrintStart();
-                                      }
-
+                }
 
 
             }
@@ -1161,6 +1223,7 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
     }
 
     private String totalCalculation(Order order) {
+        mTotal = 0;
         for (Service service : order.getOrder().getService()) {
             for (Item item : service.getItems()) {
                 mTotal = mTotal + item.getOrderItems().getQuantity() * item.getOrderItems().getPrice();
@@ -1201,6 +1264,7 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
         }
         return null;
     }
+
     private String createSpaceHeader(boolean isBluetooth, String item, int length) {
         int total;
         int num;
@@ -1220,18 +1284,21 @@ public class OrderActiivity extends BaseActivity implements OrderContracts.IOrde
         }
         return null;
     }
+
     private String createSpaceAmtPrinter(int firstLength, int secondLegth) {
         //   int num = 32 - firstLength;
         int num = 12 - firstLength;
         num = num - secondLegth;
         return new String(new char[num]).replace('\0', ' ');
     }
+
     private String createSpaceZ90Printer(int firstLength, int secondLegth) {
         //   int num = 32 - firstLength;
         int num = 38 - firstLength;
         num = num - secondLegth;
         return new String(new char[num]).replace('\0', ' ');
     }
+
     private String createSpace(boolean isBluetooth, int firstLength, int secondLegth) {
         int num = isBluetooth ? 48 - firstLength : 32 - firstLength;
         num = num - secondLegth;

@@ -212,6 +212,9 @@ order_id = Almoski.getInst().getOrderId();
                 object.put("deliveryType", del_type);
                 object.put("itemAmount", finalOrderTotal);
                 object.put("nasabDiscountAmount", nasabDiscount);
+                object.put("customerDiscount", customerDiscount);
+                object.put("discountPercentage", Almoski.getInst().getCustomer_disc_perc());
+                object.put("nasabPercentage", Almoski.getInst().getNasab_disc_perc());
                 object.put("vatAmount", vat);
                 //object.put("remarksremarks", binding.edtNote.getText().toString());
 
@@ -335,6 +338,9 @@ int service_id = 1;
                                 Almoski.getInst().setDrycleanList(null);
                                 Almoski.getInst().setCartamount(0);
                                 // Almosky.getInst().setServiceId(0);
+                                Almoski.getInst().setCustomer_disc_perc(0);
+                                Almoski.getInst().setNasab_disc_perc(0);
+                                Almoski.getInst().setNasabRate(0);
                                 Almoski.getInst().setAddress("");
                                 Almoski.getInst().setNisabClub(false);
 
@@ -485,7 +491,7 @@ startActivity(in);
         }
     }
 
-    float orderTotal = 0, vat = 0, finalOrderTotal = 0, nasabDiscount = 0;
+    double orderTotal = 0, vat = 0, finalOrderTotal = 0, nasabDiscount = 0,customerDiscount = 0;
 
     private void calculateTotal() {
 
@@ -504,25 +510,39 @@ startActivity(in);
                 orderTotal = orderTotal + Float.parseFloat(Almoski.getInst().getWashList().get(i).getTotal());
             }
         }
-        vat = calculateVat(orderTotal);
-        finalOrderTotal = vat + orderTotal;
+        finalOrderTotal = orderTotal;
+        if (Almoski.getInst().isNisabClub()) {
+            nasabDiscount = calculateNasabDiscount(orderTotal);
+            finalOrderTotal = orderTotal - nasabDiscount;
+            mBinding.lytDiscount.setVisibility(View.VISIBLE);
+            mBinding.text.setText(getResources().getString(R.string.text_discount_nisab)+"("+String.valueOf(Almoski.getInst().getNasab_disc_perc()+")"));
+            mBinding.tvDiscountNisab.setText("AED" + String.format("%.2f", nasabDiscount));
+        }else {
+            if(Almoski.getInst().getCustomer_disc_perc() > 0){
+                customerDiscount = orderTotal* Almoski.getInst().getCustomer_disc_perc() / 100;
+
+                finalOrderTotal = orderTotal - customerDiscount;
+                mBinding.lytDiscount.setVisibility(View.VISIBLE);
+                mBinding.text.setText("Discount("+String.valueOf(Almoski.getInst().getCustomer_disc_perc()+")"));
+                mBinding.tvDiscountNisab.setText("AED" + String.format("%.2f", customerDiscount));
+            }
+        }
+        vat = calculateVat(finalOrderTotal);
+        finalOrderTotal = vat + finalOrderTotal;
         mBinding.totalPrice.setText("AED" + String.format("%.2f", orderTotal));
         mBinding.vattotalPrice.setText("AED" + String.format("%.2f", vat));
 
 
-        if (Almoski.getInst().isNisabClub()) {
-            nasabDiscount = calculateNasabDiscount(finalOrderTotal);
-            finalOrderTotal = finalOrderTotal - nasabDiscount;
-            mBinding.tvDiscountNisab.setText("AED" + String.format("%.2f", nasabDiscount));
-        }
+
         mBinding.subtotalPrice.setText("AED" + String.format("%.2f", finalOrderTotal));
     }
 
-    private float calculateNasabDiscount(float orderTotal) {
-        return orderTotal * 30 / 100;
+    private double calculateNasabDiscount(double orderTotal)
+    {
+        return orderTotal * Almoski.getInst().getNasab_disc_perc() / 100;
     }
 
-    private float calculateVat(float orderTotal) {
+    private double calculateVat(double orderTotal) {
         return orderTotal * 5 / 100;
     }
 

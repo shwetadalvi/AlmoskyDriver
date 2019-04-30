@@ -24,7 +24,7 @@ public class NewOrderItem {
     private String deltime;
     @SerializedName("itemAmount")
     @Expose
-    private Float itemAmount;
+    private double itemAmount;
     @SerializedName("remarks")
     @Expose
     private String remarks;
@@ -36,13 +36,13 @@ public class NewOrderItem {
     private Integer orderId;
     @SerializedName("totalamount")
     @Expose
-    private Float totalamount;
+    private double totalamount;
     @SerializedName("nasabDiscountAmount")
     @Expose
-    private Float nasabDiscountAmount;
+    private double nasabDiscountAmount;
     @SerializedName("vatAmount")
     @Expose
-    private Float vatAmount;
+    private double vatAmount;
     @SerializedName("orders")
     @Expose
     private List<Order> orders = null;
@@ -87,11 +87,11 @@ public class NewOrderItem {
         this.deltime = deltime;
     }
 
-    public Float getItemAmount() {
+    public double getItemAmount() {
         return itemAmount;
     }
 
-    public void setItemAmount(Float itemAmount) {
+    public void setItemAmount(double itemAmount) {
         this.itemAmount = itemAmount;
     }
 
@@ -119,27 +119,27 @@ public class NewOrderItem {
         this.orderId = orderId;
     }
 
-    public Float getTotalamount() {
+    public double getTotalamount() {
         return totalamount;
     }
 
-    public void setTotalamount(Float totalamount) {
+    public void setTotalamount(double totalamount) {
         this.totalamount = totalamount;
     }
 
-    public Float getNasabDiscountAmount() {
+    public double getNasabDiscountAmount() {
         return nasabDiscountAmount;
     }
 
-    public void setNasabDiscountAmount(Float nasabDiscountAmount) {
+    public void setNasabDiscountAmount(double nasabDiscountAmount) {
         this.nasabDiscountAmount = nasabDiscountAmount;
     }
 
-    public Float getVatAmount() {
+    public double getVatAmount() {
         return vatAmount;
     }
 
-    public void setVatAmount(Float vatAmount) {
+    public void setVatAmount(double vatAmount) {
         this.vatAmount = vatAmount;
     }
 
